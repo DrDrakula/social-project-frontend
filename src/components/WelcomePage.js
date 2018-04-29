@@ -1,5 +1,5 @@
 import React from 'react'
-import { logIn } from '../actions'
+import { logIn, setUser } from '../actions'
 import { connect } from 'react-redux'
 
 class WelcomePage extends React.Component {
@@ -39,7 +39,8 @@ class WelcomePage extends React.Component {
         localStorage.setItem('token',json.token)
         localStorage.setItem('user_id',json.user_id)
         localStorage.setItem('first_name',json.first_name)
-        localStorage.setItem('last_name',json.last_name)
+        localStorage.setItem('slug',json.slug)
+        this.props.setUser(json.user)
         this.props.logIn()
         console.log(this.props)
       }else{
@@ -70,4 +71,4 @@ const mapStateToProps = state => {
   }
 }
 
-export default connect(mapStateToProps, { logIn })(WelcomePage);
+export default connect(mapStateToProps, { logIn, setUser })(WelcomePage);

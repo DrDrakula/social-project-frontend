@@ -3,9 +3,10 @@ import './App.css';
 import NavBar from './components/NavBar'
 import WelcomePage from './components/WelcomePage'
 import HomePage from './components/HomePage'
+import ProfilePage from './components/ProfilePage'
 import { Switch, Route, withRouter, Redirect } from 'react-router-dom'
 import { connect } from 'react-redux'
-import { logIn, logOut } from './actions'
+import { logIn, logOut, setUser } from './actions'
 
 class App extends Component {
 
@@ -13,7 +14,17 @@ class App extends Component {
     let token = localStorage.getItem('token')
     if(token){
       this.props.logIn()
+      this.getUser()
     }
+  }
+
+  getUser = () => {
+    fetch('http://localhost:3000/users/'+localStorage.getItem('user_id'))
+    .then(res => res.json())
+    .then(json => {
+      this.props.setUser(json.user)
+      console.log(this.props.currentUser)
+    })
   }
 
   componentDidMount(){
@@ -30,6 +41,11 @@ class App extends Component {
           <Switch>
             <Route exact path='/' render={() => this.props.loggedIn ? <Redirect to='/home' /> : <WelcomePage />}/>
             <Route path='/home' render={() => this.props.loggedIn ? <HomePage /> : <Redirect to='/' />} />
+            <Route path='/profile/:slug' render={(routerProps)=>
+                {
+                  return <ProfilePage {...routerProps}/>}
+                }
+            />
           </Switch>
         </div>
       </div>
@@ -39,8 +55,9 @@ class App extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    loggedIn: state.loggedIn
+    loggedIn: state.loggedIn,
+    currentUser: state.currentUser
   }
 }
 
-export default withRouter(connect(mapStateToProps, {logIn, logOut})(App));
+export default withRouter(connect(mapStateToProps, {logIn, logOut, setUser})(App));

@@ -1,9 +1,10 @@
 import React from 'react'
+import { Redirect } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
-import { logIn, logOut } from '../actions'
-class NavBar extends React.Component {
+import { logIn, logOut, setUser } from '../actions'
 
+class NavBar extends React.Component {
   constructor(props){
     super(props)
     this.state = {
@@ -22,8 +23,10 @@ class NavBar extends React.Component {
     localStorage.removeItem('token')
     localStorage.removeItem('user_id')
     localStorage.removeItem('first_name')
-    localStorage.removeItem('last_name')
     this.props.logOut()
+    return (
+      <Redirect to='/' />
+    )
   }
 
   handleLogIn = (event) => {
@@ -46,7 +49,8 @@ class NavBar extends React.Component {
         localStorage.setItem('token',json.token)
         localStorage.setItem('user_id',json.user_id)
         localStorage.setItem('first_name',json.first_name)
-        localStorage.setItem('last_name',json.last_name)
+        localStorage.setItem('slug',json.slug)
+        this.props.setUser(json.user)
         this.props.logIn()
         this.setState({password: ''})
         console.log(this.props)
@@ -66,7 +70,7 @@ class NavBar extends React.Component {
               Hi, {localStorage.getItem('first_name')}
             </a>
             <div className="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-              <Link to='/profile' className="dropdown-item">Profile</Link>
+              <Link to={`/profile/${localStorage.getItem('slug')}`} className="dropdown-item">Profile</Link>
               <a className="dropdown-item" href="">Another action</a>
               <div className="dropdown-divider"></div>
               <a className="dropdown-item" style={{'cursor':'pointer'}} onClick={this.handleLogOut}>Log Out</a>
@@ -129,8 +133,9 @@ class NavBar extends React.Component {
 
 const mapStateToProps = (state) => {
   return {
-    loggedIn: state.loggedIn
+    loggedIn: state.loggedIn,
+    currentUser: state.currentUser
   }
 }
 
-export default connect(mapStateToProps, {logIn, logOut})(NavBar);
+export default connect(mapStateToProps, {logIn, logOut, setUser})(NavBar);
