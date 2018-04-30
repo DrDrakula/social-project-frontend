@@ -8,6 +8,8 @@ import { Switch, Route, withRouter, Redirect } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { logIn, logOut, setUser } from './actions'
 
+///FIXING GITHUB EMAIL ISSUE
+
 class App extends Component {
 
   checkIfLogged = () => {
