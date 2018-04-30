@@ -2,15 +2,28 @@ import React from 'react'
 import { Redirect } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
-import { logIn, logOut, setUser } from '../actions'
+import { logIn, logOut, setUser, search } from '../actions'
 
 class NavBar extends React.Component {
   constructor(props){
     super(props)
     this.state = {
       email: '',
-      password: ''
+      password: '',
+      search: ''
     }
+  }
+
+  handleSearch = (event, search) => {
+    event.preventDefault()
+    fetch('http://localhost:3000/users')
+    .then(res => res.json())
+    .then(json => {
+      let searchResults = json.users.filter((person) => `${person.first_name.toLowerCase()} ${person.last_name.toLowerCase()}`.includes(search.toLowerCase()))
+      searchResults = searchResults.sort((a,b) => a.last_name.localeCompare(b.last_name))
+      this.props.search(searchResults)
+      console.log(this.props.searchResults)
+    })
   }
 
   handleInput = (event) => {
@@ -24,9 +37,6 @@ class NavBar extends React.Component {
     localStorage.removeItem('user_id')
     localStorage.removeItem('first_name')
     this.props.logOut()
-    return (
-      <Redirect to='/' />
-    )
   }
 
   handleLogIn = (event) => {
@@ -46,14 +56,13 @@ class NavBar extends React.Component {
     .then(json => {
       if(!json.error){
         console.log(json)
+        this.props.setUser(json.user)
         localStorage.setItem('token',json.token)
         localStorage.setItem('user_id',json.user_id)
         localStorage.setItem('first_name',json.first_name)
         localStorage.setItem('slug',json.slug)
-        this.props.setUser(json.user)
         this.props.logIn()
         this.setState({password: ''})
-        console.log(this.props)
       }else{
         console.log(json.error)
         this.setState({password: ''})
@@ -65,6 +74,7 @@ class NavBar extends React.Component {
     if(this.props.loggedIn){
       return (
         <ul className="navbar-nav mr-auto">
+          <input className="form-control mr-sm-2" value={this.state.search} name='search' onChange={this.handleInput} type="text" placeholder="Search for people" aria-label="Search"/>
           <li className="nav-item active dropdown">
             <a className="nav-link dropdown-toggle" href="" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               Hi, {localStorage.getItem('first_name')}
@@ -100,28 +110,11 @@ class NavBar extends React.Component {
 
           <div className="collapse navbar-collapse" id="navbarSupportedContent">
             <ul className="navbar-nav mr-auto">
-              <li className="nav-item active">
-                <a className="nav-link" href="">Home <span className="sr-only">(current)</span></a>
-              </li>
               <li className="nav-item">
-                <a className="nav-link" href="">Link</a>
-              </li>
-              <li className="nav-item dropdown">
-                <a className="nav-link dropdown-toggle" href="" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  Dropdown
-                </a>
-                <div className="dropdown-menu" aria-labelledby="navbarDropdown">
-                  <a className="dropdown-item" href="">Action</a>
-                  <a className="dropdown-item" href="">Another action</a>
-                  <div className="dropdown-divider"></div>
-                  <a className="dropdown-item" href="">Something else here</a>
-                </div>
-              </li>
-              <li className="nav-item">
-                <a className="nav-link disabled" href="">Disabled</a>
+                <Link to='/home' className="nav-link" href="">Home <span className="sr-only">(current)</span></Link>
               </li>
             </ul>
-            <form className="form-inline my-2 my-lg-0" onSubmit={this.props.loggedIn ? this.handleLogOut : this.handleLogIn}>
+            <form className="form-inline my-2 my-lg-0" onSubmit={this.props.loggedIn ? (event) => this.handleSearch(event,this.state.search) : this.handleLogIn}>
               {this.logInForm()}
             </form>
           </div>
@@ -134,8 +127,9 @@ class NavBar extends React.Component {
 const mapStateToProps = (state) => {
   return {
     loggedIn: state.loggedIn,
-    currentUser: state.currentUser
+    currentUser: state.currentUser,
+    searchResults: state.searchResults
   }
 }
 
-export default connect(mapStateToProps, {logIn, logOut, setUser})(NavBar);
+export default connect(mapStateToProps, {logIn, logOut, setUser, search})(NavBar);

@@ -5,6 +5,20 @@ export function setUser(user){
   }
 }
 
+export function search(people){
+  return {
+    type: 'SEARCH',
+    payload: people
+  }
+}
+
+export function addPost(post){
+  return {
+    type: 'ADD_POST',
+    payload: post
+  }
+}
+
 export function logIn(){
   return {
     type: 'LOG_IN'

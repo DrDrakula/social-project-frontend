@@ -9,6 +9,18 @@ class ProfilePage extends React.Component {
     }
   }
 
+  getPosts = () => {
+    if(this.state.user.posts){
+      return (
+        this.state.user.posts.map(post => <li key={post.id}><h3>{post.title}</h3><p>{post.content}</p></li>)
+      )
+    }else{
+      return (
+        <h2>LOADING</h2>
+      )
+    }
+  }
+
   componentDidMount(){
     let slug = this.props.match.params.slug
     let id = slug.split('-')[slug.split('-').length - 1]
@@ -25,6 +37,9 @@ class ProfilePage extends React.Component {
       <div>
         <h2>{this.state.user.first_name} {this.state.user.last_name}</h2>
         <h4>Posts</h4>
+        <ul>
+          {this.getPosts()}
+        </ul>
       </div>
     )
   }
