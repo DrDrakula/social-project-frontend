@@ -2,16 +2,22 @@ import React from 'react'
 import { connect } from 'react-redux'
 class PostsContainer extends React.Component {
 
+  state = {
+    posts: []
+  }
+
   getPosts = () => {
-    if( this.props.currentUser && this.props.currentUser.posts){
-      return (
-        this.props.currentUser.posts.map(post => <li key={post.id}><h3>{post.title}</h3><p>{post.content}</p></li>)
-      )
-    }else{
-      return (
-        <h2>Loading</h2>
-      )
-    }
+    fetch('http://localhost:3000/users/'+localStorage.getItem('user_id'))
+    .then(res => res.json())
+    .then(json => {
+      if(json.user.posts){
+        this.setState({posts: json.user.posts})
+      }
+    })
+  }
+
+  componentDidMount(){
+    this.getPosts()
   }
 
   render () {
@@ -19,7 +25,7 @@ class PostsContainer extends React.Component {
     return (
       <div>
         <ul>
-          {this.getPosts()}
+          {this.state.posts.map(post => <li key={post.id}><h3>{post.title}</h3><p>{post.content}</p></li>)}
         </ul>
       </div>
     )

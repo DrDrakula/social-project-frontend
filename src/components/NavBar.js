@@ -1,5 +1,4 @@
 import React from 'react'
-import { Redirect } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { logIn, logOut, setUser, search } from '../actions'
@@ -36,6 +35,7 @@ class NavBar extends React.Component {
     localStorage.removeItem('token')
     localStorage.removeItem('user_id')
     localStorage.removeItem('first_name')
+    localStorage.removeItem('slug')
     this.props.logOut()
   }
 
@@ -56,11 +56,12 @@ class NavBar extends React.Component {
     .then(json => {
       if(!json.error){
         console.log(json)
-        this.props.setUser(json.user)
         localStorage.setItem('token',json.token)
         localStorage.setItem('user_id',json.user_id)
         localStorage.setItem('first_name',json.first_name)
         localStorage.setItem('slug',json.slug)
+        this.props.setUser(json.user)
+        console.log(this.props.currentUser)
         this.props.logIn()
         this.setState({password: ''})
       }else{

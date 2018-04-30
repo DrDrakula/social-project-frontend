@@ -10,7 +10,7 @@ class WelcomePage extends React.Component {
       first_name:'',
       last_name:'',
       email:'',
-      password:'',
+      password:''
     }
   }
 
@@ -42,7 +42,12 @@ class WelcomePage extends React.Component {
         localStorage.setItem('slug',json.slug)
         this.props.setUser(json.user)
         this.props.logIn()
-        console.log(this.props)
+        this.setState({
+          first_name:'',
+          last_name:'',
+          email:'',
+          password:''
+        })
       }else{
         console.log(json.error)
       }

@@ -27,7 +27,7 @@ class ProfilePage extends React.Component {
 
     fetch('http://localhost:3000/users/' + id)
     .then(res => res.json())
-    .then(json => this.setState({user:json.user}, () => console.log(this.state)))
+    .then(json => this.setState({user:json.user}))
   }
 
 
