@@ -18,9 +18,11 @@ class WelcomePage extends React.Component {
     this.setState({ ...this.state, [event.target.name]: event.target.value })
   }
 
+  componentDidMount(){
+  }
+
   handleSubmit = (event) => {
     event.preventDefault()
-
     fetch('http://localhost:3000/users', {
       method: 'POST',
       headers: {
@@ -52,8 +54,11 @@ class WelcomePage extends React.Component {
         console.log(json.error)
       }
     })
-  }
 
+  }
+  componentWillUnmount(){
+
+  }
   render () {
     return (
       <div>
@@ -72,7 +77,8 @@ class WelcomePage extends React.Component {
 
 const mapStateToProps = state => {
   return {
-    loggedIn: state.loggedIn
+    loggedIn: state.loggedIn,
+    currentUser: state.currentUser
   }
 }
 

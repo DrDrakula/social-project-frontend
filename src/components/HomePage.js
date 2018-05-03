@@ -7,9 +7,9 @@ class HomePage extends React.Component {
 
   render () {
     return (
-      <div className='container'>
+      <div className='container first-div'>
         <h1>Home Page</h1>
-        <div>
+        <div className='center'>
           <PostForm />
           <PostsContainer />
         </div>

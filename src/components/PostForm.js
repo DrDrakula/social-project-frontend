@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { addPost } from '../actions'
+import { addPost, addPostToUser } from '../actions'
 class PostForm extends React.Component {
   constructor(props){
     super(props)
@@ -32,6 +32,7 @@ class PostForm extends React.Component {
     .then(json => {
       console.log(json)
       this.props.addPost(json)
+      this.props.addPostToUser(json)
       this.setState({title:'',content:''})
     })
   }
@@ -60,4 +61,4 @@ const mapStateToProps = (state) => {
   }
 }
 
-export default connect(mapStateToProps, {addPost})(PostForm);
+export default connect(mapStateToProps, {addPost, addPostToUser})(PostForm);

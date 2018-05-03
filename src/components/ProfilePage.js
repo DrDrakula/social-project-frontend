@@ -27,19 +27,31 @@ class ProfilePage extends React.Component {
 
     fetch('http://localhost:3000/users/' + id)
     .then(res => res.json())
-    .then(json => this.setState({user:json.user}))
+    .then(json => {
+      if(json && json.user.first_name.toLowerCase() === slug.split('-')[0] && json.user.last_name.toLowerCase() === slug.split('-')[1]){
+        this.setState({user:json.user})
+      }else{
+        this.setState({user:"This user doesn't exist"})
+      }
+    })
   }
 
 
 
   render () {
     return (
-      <div>
-        <h2>{this.state.user.first_name} {this.state.user.last_name}</h2>
-        <h4>Posts</h4>
-        <ul>
-          {this.getPosts()}
-        </ul>
+      <div className='container first-div'>
+        {this.state.user !== "This user doesn't exist" ?
+          <div>
+            <h2>{this.state.user.first_name} {this.state.user.last_name}</h2>
+            <h4>Posts</h4>
+            <ul>
+              {this.getPosts()}
+            </ul>
+          </div>
+          :
+          <h3>{this.state.user}</h3>
+        }
       </div>
     )
   }

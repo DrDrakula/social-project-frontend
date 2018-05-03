@@ -43,7 +43,7 @@ class App extends Component {
           <Switch>
             <Route exact path='/' render={() => this.props.loggedIn ? <Redirect to='/home' /> : <WelcomePage />}/>
             <Route path='/home' render={() => this.props.loggedIn ? <HomePage /> : <Redirect to='/' />} />
-            <Route path='/profile/:slug' render={(routerProps)=> localStorage.getItem('user_id') ? <ProfilePage {...routerProps}/> : <Redirect to='/'/>}/>
+            <Route exact path='/profile/:slug' render={(routerProps)=> localStorage.getItem('user_id') ? <ProfilePage {...routerProps}/> : <Redirect to='/'/>}/>
           </Switch>
         </div>
       </div>

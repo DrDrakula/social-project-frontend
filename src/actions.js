@@ -12,9 +12,29 @@ export function search(people){
   }
 }
 
+export function getPosts(){
+  return function(dispatch){
+    fetch('http://localhost:3000/posts')
+    .then(res => res.json())
+    .then(json => {
+      console.log('Entered get Action', json.posts)
+      dispatch({
+        type: 'GET_POSTS',
+        payload: json.posts
+      })
+    })
+  }
+}
+
 export function addPost(post){
   return {
     type: 'ADD_POST',
+    payload: post
+  }
+}
+export function addPostToUser(post){
+  return {
+    type: 'ADD_POST_TO_USER',
     payload: post
   }
 }

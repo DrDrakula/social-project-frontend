@@ -1,31 +1,24 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import { Link } from 'react-router-dom'
+import { getPosts } from '../actions'
 class PostsContainer extends React.Component {
 
-  state = {
-    posts: []
-  }
-
-  getPosts = () => {
-    fetch('http://localhost:3000/users/'+localStorage.getItem('user_id'))
-    .then(res => res.json())
-    .then(json => {
-      if(json.user.posts){
-        this.setState({posts: json.user.posts})
-      }
-    })
-  }
-
   componentDidMount(){
-    this.getPosts()
+    this.props.getPosts()
   }
 
   render () {
     ///////////////////////  MAKE A POST COMPONENT
+
     return (
       <div>
         <ul>
-          {this.state.posts.map(post => <li key={post.id}><h3>{post.title}</h3><p>{post.content}</p></li>)}
+          {this.props.posts ?
+            this.props.posts.map(post => <li key={post.id}><div><h4>{post.title} <Link to={`/profile/${post.user.slug}`} className="by-who-span">by {post.user.first_name}</Link></h4><p>{post.content}<br/><span className="by-who-span">{post.created_at}</span></p></div></li>)
+            :
+            <h4>LOADING</h4>
+          }
         </ul>
       </div>
     )
@@ -34,8 +27,9 @@ class PostsContainer extends React.Component {
 
 const mapStateToProps = (state) => {
   return {
-    currentUser: state.currentUser
+    currentUser: state.currentUser,
+    posts: state.posts
   }
 }
 
-export default connect(mapStateToProps)(PostsContainer);
+export default connect(mapStateToProps, { getPosts })(PostsContainer);
